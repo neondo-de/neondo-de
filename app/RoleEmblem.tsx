@@ -7,17 +7,18 @@ const normalized=(role:string)=>role.toLowerCase().replace(/[ _-]+/g,"-");
 export default function RoleEmblem({role,label,size="md"}:Props){
  const key=normalized(role||"");
  const data:{name:string;kind:"crown"|"shield"|"building"|"gear"|"star"|"crew"|"check"|"tech"} =
+  key.includes("co-founder")?{name:"Co-Founder",kind:"crown"}:
   key.includes("founder")?{name:"Founder",kind:"crown"}:
   key.includes("ceo")?{name:"CEO",kind:"crown"}:
-  key.includes("co-founder")?{name:"Co-Founder",kind:"crown"}:
+  key.includes("coo")?{name:"COO",kind:"crown"}:
   key.includes("admin")?{name:"Admin",kind:"shield"}:
   key.includes("staff")?{name:"Staff",kind:"gear"}:
   key.includes("developer")?{name:"Developer",kind:"tech"}:
   key.includes("moderator")?{name:"Moderator",kind:"shield"}:
-  key.includes("verified company")?{name:"Verified Company",kind:"building"}:
+  key.includes("verified-company")?{name:"Verified Company",kind:"building"}:
   key.includes("company")?{name:"Company",kind:"building"}:
   key.includes("organizer")?{name:"Organizer",kind:"star"}:
-  key.includes("top crew")?{name:"Top Crew",kind:"star"}:
+  key.includes("top-crew")?{name:"Top Crew",kind:"star"}:
   key.includes("verified")?{name:"Verified",kind:"check"}:
   {name:label||"Crew",kind:"crew"};
  const title=label||data.name;
