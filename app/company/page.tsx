@@ -1,13 +1,13 @@
 "use client";
-
+import "./company.css";
 import { useEffect, useState } from "react";
 import { getSupabase } from "@/lib/supabase";
 import { BriefcaseBusiness, LogOut, Plus, Users, CalendarDays, X } from "lucide-react";
 
 export default function CompanyPage(){
- const supabase=getSupabase(); const [user,setUser]=useState<any>(null); const [shifts,setShifts]=useState<any[]>([]); const [loading,setLoading]=useState(true); const [open,setOpen]=useState(false); const [busy,setBusy]=useState(false); const [msg,setMsg]=useState("");
+ const supabase=getSupabase(); const [shifts,setShifts]=useState<any[]>([]); const [loading,setLoading]=useState(true); const [open,setOpen]=useState(false); const [busy,setBusy]=useState(false); const [msg,setMsg]=useState("");
  const [form,setForm]=useState({title:"",role:"Stagehand",start_at:"",end_at:"",hourly_rate:"",location:"Berlin",description:""});
- async function load(){const {data:{user}}=await supabase.auth.getUser();if(!user){location.href="/";return}setUser(user);const {data}=await supabase.from("shifts").select("*").order("start_at",{ascending:true}).limit(30);setShifts(data||[]);setLoading(false)}
+ async function load(){const {data:{user}}=await supabase.auth.getUser();if(!user){location.href="/";return}const {data}=await supabase.from("shifts").select("*").order("start_at",{ascending:true}).limit(30);setShifts(data||[]);setLoading(false)}
  useEffect(()=>{load()},[]);
  async function createShift(e:any){e.preventDefault();setBusy(true);setMsg("");const {error}=await supabase.from("shifts").insert({title:form.title,role:form.role,start_at:new Date(form.start_at).toISOString(),end_at:form.end_at?new Date(form.end_at).toISOString():null,hourly_rate:form.hourly_rate?Number(form.hourly_rate):null,location:form.location,description:form.description,status:"open"});if(error)setMsg(error.message);else{setOpen(false);setForm({title:"",role:"Stagehand",start_at:"",end_at:"",hourly_rate:"",location:"Berlin",description:""});await load()}setBusy(false)}
  async function logout(){await supabase.auth.signOut();location.href="/"}
