@@ -1,4 +1,5 @@
 "use client";
+import "../simple.css";
 import { ArrowLeft, Bell, CheckCircle2, CalendarDays, BriefcaseBusiness } from "lucide-react";
 
 const items=[
