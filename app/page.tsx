@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { getSupabase } from "@/lib/supabase";
 
 const LogoMark=()=> <span className="stage-logo-mark" aria-hidden="true"><svg viewBox="0 0 28 28" role="img"><path d="M6 22V6h4l8 11V6h4v16h-4l-8-11v11H6Z"/></svg></span>;
-const Logo=()=> <span className="neondo-wordmark" aria-label="NEONDO"><span className="neondo-neon">NEON</span><span className="neondo-do">DO</span><i aria-hidden="true"/></span>;
+const Logo=()=> <span className="neondo-wordmark" aria-label="neondo"><span className="neondo-text">neondo</span><i className="neondo-dot" aria-hidden="true"/></span>;
 const opportunities=[
  ["TONIGHT","Stagehand","18:00 — 02:00","€120","lime"],
  ["FRI 28 AUG","Event Photographer","19:00 — 00:00","€220","pink"],
