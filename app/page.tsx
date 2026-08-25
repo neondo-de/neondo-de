@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { getSupabase } from "@/lib/supabase";
 
+const LogoMark=()=> <span className="stage-logo-mark" aria-hidden="true"><svg viewBox="0 0 28 28" role="img"><path d="M6 22V6h4l8 11V6h4v16h-4l-8-11v11H6Z"/></svg></span>;
 const opportunities = [
   ["TONIGHT", "Stagehand", "18:00 — 02:00", "€120", "lime"],
   ["FRI 28 AUG", "Event Photographer", "19:00 — 00:00", "€220", "pink"],
@@ -52,7 +53,7 @@ export default function Home() {
 
   return <main className="stagework-home">
     <nav className="stage-nav">
-      <a className="stage-logo" href="#top"><span className="stage-logo-mark">N</span><span>NEONDO</span></a>
+      <a className="stage-logo" href="#top"><LogoMark/><span>NEONDO</span></a>
       <div className="stage-nav-links"><a href="#opportunities">Opportunities</a><a href="#how">How it works</a><a href="#proof">The network</a></div>
       <div className="stage-nav-actions"><button className="stage-login" onClick={() => open("login")}>Log in</button><button className="stage-black" onClick={() => open("signup")}>Join NEONDO <span>↗</span></button></div>
     </nav>
@@ -96,8 +97,8 @@ export default function Home() {
 
     <section className="stage-organizer"><div><span className="stage-label">FOR ORGANIZERS & COMPANIES</span><h2>Good events<br />need <i>good people.</i></h2><p>Post a shift, find trusted crew and keep your whole production network in one place.</p></div><button className="stage-black" onClick={() => open("signup")}>I'm hiring <span>↗</span></button></section>
 
-    <footer className="stage-footer"><a className="stage-logo" href="#top"><span className="stage-logo-mark">N</span><span>NEONDO</span></a><span>Berlin · Built for the people behind the events.</span><span>© 2026</span></footer>
+    <footer className="stage-footer"><a className="stage-logo" href="#top"><LogoMark/><span>NEONDO</span></a><span>Berlin · Built for the people behind the events.</span><span>© 2026</span></footer>
 
-    {mode && <div className="stage-modal-backdrop" onClick={() => setMode(null)}><div className="stage-modal" onClick={e => e.stopPropagation()}><button className="stage-close" onClick={() => setMode(null)}>×</button><div className="stage-logo-mark">N</div><span className="stage-label">WELCOME TO NEONDO</span><h2>{mode === "login" ? "Welcome back." : "Join the network."}</h2><p>{mode === "login" ? "Log in to continue to your NEONDO profile." : "Create your profile and start connecting."}</p>{error && <div className="auth-error">{error}</div>}{notice && <div className="auth-notice">{notice}</div>}<button className="stage-provider" disabled={busy} onClick={() => oauth("google")}>Continue with Google <b>G</b></button><button className="stage-provider" disabled={busy} onClick={() => oauth("apple")}>Continue with Apple <b>●</b></button><div className="stage-divider">or</div>{mode === "signup" && <input value={name} onChange={e => setName(e.target.value)} placeholder="Full name" /> }<input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email address" type="email" /><input value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" type="password" /><button className="stage-black stage-full" disabled={busy || !email || !password} onClick={submit}>{busy ? "Please wait…" : mode === "login" ? "Log in" : "Create account"} <span>↗</span></button><small>By continuing, you agree to NEONDO's Terms and Privacy Policy.</small></div></div>}
+    {mode && <div className="stage-modal-backdrop" onClick={() => setMode(null)}><div className="stage-modal" onClick={e => e.stopPropagation()}><button className="stage-close" onClick={() => setMode(null)}>×</button><LogoMark/><span className="stage-label">WELCOME TO NEONDO</span><h2>{mode === "login" ? "Welcome back." : "Join the network."}</h2><p>{mode === "login" ? "Log in to continue to your NEONDO profile." : "Create your profile and start connecting."}</p>{error && <div className="auth-error">{error}</div>}{notice && <div className="auth-notice">{notice}</div>}<button className="stage-provider" disabled={busy} onClick={() => oauth("google")}>Continue with Google <b>G</b></button><button className="stage-provider" disabled={busy} onClick={() => oauth("apple")}>Continue with Apple <b>●</b></button><div className="stage-divider">or</div>{mode === "signup" && <input value={name} onChange={e => setName(e.target.value)} placeholder="Full name" /> }<input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email address" type="email" /><input value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" type="password" /><button className="stage-black stage-full" disabled={busy || !email || !password} onClick={submit}>{busy ? "Please wait…" : mode === "login" ? "Log in" : "Create account"} <span>↗</span></button><small>By continuing, you agree to NEONDO's Terms and Privacy Policy.</small></div></div>}
   </main>;
 }
