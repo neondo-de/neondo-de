@@ -1,4 +1,5 @@
 "use client";
+import "../simple.css";
 import { useState } from "react";
 import { ArrowLeft, MessageCircle, Send } from "lucide-react";
 
