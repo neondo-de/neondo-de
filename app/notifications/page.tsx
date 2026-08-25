@@ -1,10 +1,12 @@
 "use client";
-import "../simple.css";
-import { ArrowLeft, Bell, CheckCircle2, CalendarDays, BriefcaseBusiness } from "lucide-react";
-
-const items=[
- {icon:BriefcaseBusiness,title:"Your crew updates live here",text:"New applications, shift changes and company updates will appear here.",time:"Ready"},
- {icon:CalendarDays,title:"Keep your schedule up to date",text:"Accepted shifts will be shown in your schedule so you always know where to be.",time:"Tip"},
- {icon:CheckCircle2,title:"You're all set",text:"There are no unread notifications right now.",time:"Now"}
-];
-export default function NotificationsPage(){return <main className="simple-page"><a className="back" href="/dashboard"><ArrowLeft size={16}/> Back to dashboard</a><div className="simple-card wide"><div className="title-line"><div><span className="eyebrow">UPDATES</span><h1>Notifications</h1></div><Bell size={25}/></div><p className="muted">One simple place for everything that needs your attention.</p><div className="notice-list">{items.map(({icon:Icon,...x})=><article className="notice-item" key={x.title}><div className="notice-icon"><Icon size={18}/></div><div><b>{x.title}</b><p>{x.text}</p></div><small>{x.time}</small></article>)}</div></div></main>}
+import { useEffect,useState } from "react";
+import { ArrowLeft, Bell, CheckCheck } from "lucide-react";
+import { getSupabase } from "@/lib/supabase";
+export default function NotificationsPage(){const supabase=getSupabase();const [items,setItems]=useState<any[]>([]);const [loading,setLoading]=useState(true);const [error,setError]=useState("");
+ async function load(){const {data:{user}}=await supabase.auth.getUser();if(!user){location.href="/";return}const {data,error}=await supabase.from("notifications").select("*").eq("user_id",user.id).order("created_at",{ascending:false});if(error)setError(error.message);setItems(data||[]);setLoading(false)}
+ useEffect(()=>{load()},[]);
+ async function mark(id:string){const {error}=await supabase.from("notifications").update({read_at:new Date().toISOString()}).eq("id",id);if(error)setError(error.message);else setItems(v=>v.map(x=>x.id===id?{...x,read_at:new Date().toISOString()}:x))}
+ async function markAll(){const {data:{user}}=await supabase.auth.getUser();if(!user)return;const {error}=await supabase.from("notifications").update({read_at:new Date().toISOString()}).eq("user_id",user.id).is("read_at",null);if(error)setError(error.message);else setItems(v=>v.map(x=>({...x,read_at:new Date().toISOString()})))}
+ const unread=items.filter(x=>!x.read_at).length;
+ if(loading)return <div className="dashboard-loading">Loading notifications…</div>;
+ return <main className="simple-page"><a className="back" href="/dashboard"><ArrowLeft size={16}/> Back to dashboard</a><div className="simple-card wide"><div className="title-line"><div><span className="eyebrow">UPDATES</span><h1>Notifications</h1></div><Bell size={25}/></div><div className="notice-toolbar"><span>{unread?`${unread} unread`:"All caught up"}</span>{unread>0&&<button onClick={markAll}><CheckCheck size={15}/> Mark all read</button>}</div>{error&&<p className="notice">{error}</p>}{items.length?<div className="notice-list">{items.map(n=><article className={`notice-item ${n.read_at?"read":"unread"}`} key={n.id} onClick={()=>!n.read_at&&mark(n.id)}><div className="notice-icon"><Bell size={18}/></div><div><b>{n.title}</b><p>{n.body}</p>{n.link&&<a href={n.link}>Open →</a>}</div><small>{new Date(n.created_at).toLocaleString("en-DE",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})}</small></article>)}</div>:<div className="simple-empty"><Bell size={25}/><h3>No notifications yet.</h3><p>Applications, shift changes and messages will appear here.</p></div>}</div></main>}
