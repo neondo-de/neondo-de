@@ -1,16 +1,18 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Search, SlidersHorizontal, CalendarDays, UserRound, BriefcaseBusiness, LogOut, MapPin, Clock3, Euro, ChevronRight } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Search, SlidersHorizontal, CalendarDays, UserRound, BriefcaseBusiness, LogOut, MapPin, Clock3, Euro, ChevronRight, Heart, MessageCircle, Bell, Settings2 } from "lucide-react";
+import { getSupabase } from "@/lib/supabase";
+import RoleEmblem from "../RoleEmblem";
 
 export type Shift = { id:string; title:string; role:string; start_at:string; end_at:string|null; hourly_rate:number|null; location?:string|null; status:string };
 
 export default function DashboardClient({ initialShifts, displayName, onLogout }:{initialShifts:Shift[];displayName:string;onLogout:()=>void}) {
- const [query,setQuery]=useState(""); const [role,setRole]=useState("All roles");
- const roles=["All roles",...Array.from(new Set(initialShifts.map(s=>s.role).filter(Boolean)))];
+ const supabase=getSupabase(); const [query,setQuery]=useState(""); const [role,setRole]=useState("All roles"); const [emblem,setEmblem]=useState(""); const [avatar,setAvatar]=useState(""); const roles=["All roles",...Array.from(new Set(initialShifts.map(s=>s.role).filter(Boolean)))];
+ useEffect(()=>{(async()=>{const {data:{user}}=await supabase.auth.getUser();if(!user)return;const [{data:e},{data:p}]=await Promise.all([supabase.from("neondo_member_emblems").select("emblem").eq("user_id",user.id).maybeSingle(),supabase.from("worker_profiles").select("avatar_url").eq("id",user.id).maybeSingle()]);setEmblem(e?.emblem||"");setAvatar(p?.avatar_url||"")})()},[]);
  const shifts=useMemo(()=>initialShifts.filter(s=>`${s.title} ${s.role} ${s.location||""}`.toLowerCase().includes(query.toLowerCase())&&(role==="All roles"||s.role===role)),[initialShifts,query,role]);
- return <main className="dashboard"><aside className="sidebar"><div className="brand"><span className="brand-mark">N</span><span>NEONDO</span></div><nav><a className="active"><BriefcaseBusiness size={17}/> Discover shifts</a><a href="/schedule"><CalendarDays size={17}/> My schedule</a><a href="/profile"><UserRound size={17}/> My profile</a></nav><button className="logout" onClick={onLogout}><LogOut size={16}/> Log out</button></aside>
- <section className="dashboard-main"><header className="dash-header"><div><span className="eyebrow">NEONDO NETWORK</span><h1>Good to see you, {displayName}.</h1><p>Find your next opportunity in Berlin.</p></div><a href="/profile" className="profile-chip"><span>{displayName[0]?.toUpperCase()||"N"}</span>{displayName}</a></header>
+ return <main className="dashboard"><aside className="sidebar"><div className="brand"><span className="brand-mark">N</span><span>NEONDO</span></div><nav><a className="active"><BriefcaseBusiness size={17}/> Discover shifts</a><a href="/schedule"><CalendarDays size={17}/> My schedule</a><a href="/favorites"><Heart size={17}/> Favorites</a><a href="/messages"><MessageCircle size={17}/> Messages</a><a href="/notifications"><Bell size={17}/> Notifications</a><a href="/reviews"><UserRound size={17}/> Reviews</a><a href="/profile"><UserRound size={17}/> My profile</a><a href="/settings"><Settings2 size={17}/> Settings</a></nav><button className="logout" onClick={onLogout}><LogOut size={16}/> Log out</button></aside>
+ <section className="dashboard-main"><header className="dash-header"><div><span className="eyebrow">NEONDO NETWORK</span><h1>Good to see you, {displayName}.</h1><p>Find your next opportunity in Berlin.</p></div><a href="/profile" className="profile-chip">{avatar?<img src={avatar} alt=""/>:<span>{displayName[0]?.toUpperCase()||"N"}</span>}<div><b>{displayName}</b>{emblem&&<RoleEmblem role={emblem} size="sm"/>}</div></a></header>
  <div className="searchbar"><Search size={18}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search roles, shifts or locations"/><span>Berlin</span></div>
  <div className="filters"><SlidersHorizontal size={15}/>{roles.map(r=><button className={role===r?"selected":""} key={r} onClick={()=>setRole(r)}>{r}</button>)}</div>
  <div className="dash-section-head"><div><span className="eyebrow">OPEN NOW</span><h2>Available shifts <small>{shifts.length}</small></h2></div></div>
