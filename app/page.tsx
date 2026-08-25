@@ -3,21 +3,101 @@
 import { useEffect, useState } from "react";
 import { getSupabase } from "@/lib/supabase";
 
-const features=[{icon:"◈",title:"Find your crew",text:"Discover reliable event professionals in Berlin and build your network."},{icon:"✦",title:"Find your next shift",text:"See opportunities that match your role, availability and experience."},{icon:"↗",title:"Build your profile",text:"Show what you do, where you work and who you are available for."}];
+const opportunities = [
+  ["TONIGHT", "Stagehand", "18:00 — 02:00", "€120", "lime"],
+  ["FRI 28 AUG", "Event Photographer", "19:00 — 00:00", "€220", "pink"],
+  ["SAT 29 AUG", "Content Creator", "20:00 — 01:00", "€180", "blue"],
+];
 
-export default function Home(){
- const supabase=getSupabase(); const [mode,setMode]=useState<"login"|"signup"|null>(null); const [email,setEmail]=useState(""); const [password,setPassword]=useState(""); const [name,setName]=useState(""); const [busy,setBusy]=useState(false); const [error,setError]=useState(""); const [notice,setNotice]=useState("");
- useEffect(()=>{supabase.auth.getUser().then(({data:{user}})=>{if(user)location.href="/dashboard"})},[]);
- function open(m:"login"|"signup"){setMode(m);setError("");setNotice("")}
- async function submit(){setBusy(true);setError("");setNotice("");try{if(mode==="signup"){const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:name}}});if(error)throw error;if(data.session){location.href="/profile"}else setNotice("Check your email to confirm your account, then come back and log in.")}else{const {error}=await supabase.auth.signInWithPassword({email,password});if(error)throw error;location.href="/dashboard"}}catch(e:any){setError(e.message||"Something went wrong. Please try again.")}finally{setBusy(false)}}
- async function oauth(provider:"google"|"apple"){setBusy(true);setError("");const {error}=await supabase.auth.signInWithOAuth({provider,options:{redirectTo:`${window.location.origin}/dashboard`}});if(error){setError(error.message);setBusy(false)}}
- return <main className="site-shell">
-  <nav className="nav"><div className="brand"><span className="brand-mark">N</span><span>NEONDO</span></div><div className="nav-links"><a href="#how">How it works</a><a href="#network">The network</a></div><div className="nav-actions"><button className="ghost" onClick={()=>open("login")}>Log in</button><button className="primary small" onClick={()=>open("signup")}>Join NEONDO</button></div></nav>
-  <section className="hero"><div className="hero-copy"><div className="eyebrow"><span className="pulse"/> BUILT FOR THE PEOPLE BEHIND THE EVENTS</div><h1>Berlin's event<br/><em>network.</em></h1><p className="hero-text">NEONDO connects the people who make events happen — crews, freelancers, technicians and production teams.</p><div className="hero-buttons"><button className="primary" onClick={()=>open("signup")}>Join the network <span>→</span></button><button className="text-button" onClick={()=>document.getElementById("how")?.scrollIntoView({behavior:"smooth"})}>See how it works ↓</button></div><div className="proof"><div className="avatars"><span>AM</span><span>LK</span><span>JD</span><span>+</span></div><span>Built for Berlin's event community</span></div></div><div className="hero-card-wrap"><div className="glow"/><div className="network-card"><div className="card-top"><span>NEONDO NETWORK</span><span className="live">● LIVE</span></div><div className="profile-row"><div className="avatar large">MK</div><div><strong>Max König</strong><span>Stage Manager · Berlin</span></div><b>•••</b></div><div className="shift"><div><small>OPEN SHIFT</small><strong>Production Crew</strong><span>Tomorrow · 18:00 — 02:00</span></div><button>View →</button></div><div className="mini-stats"><div><b>1,240</b><span>Professionals</span></div><div><b>86</b><span>Open shifts</span></div><div><b>42</b><span>Companies</span></div></div></div></div></section>
-  <section className="ticker"><span>STAGEHANDS</span><i>✦</i><span>PRODUCTION</span><i>✦</i><span>TECHNICIANS</span><i>✦</i><span>EVENT CREW</span><i>✦</i><span>FREELANCERS</span><i>✦</i><span>BERLIN</span></section>
-  <section id="how" className="features"><div className="section-intro"><span className="eyebrow">ONE PLACE. REAL PEOPLE.</span><h2>Made for the people<br/>behind the <em>scenes.</em></h2></div><div className="feature-grid">{features.map(f=><article className="feature" key={f.title}><div className="feature-icon">{f.icon}</div><h3>{f.title}</h3><p>{f.text}</p><a href="#network">Learn more <span>→</span></a></article>)}</div></section>
-  <section id="network" className="cta"><div><span className="eyebrow">YOUR NETWORK. YOUR OPPORTUNITIES.</span><h2>Ready to get<br/><em>connected?</em></h2></div><button className="primary" onClick={()=>open("signup")}>Create your profile <span>→</span></button></section>
-  <footer><div className="brand"><span className="brand-mark">N</span><span>NEONDO</span></div><span>© 2026 NEONDO · Berlin</span><span>Built for the event community.</span></footer>
-  {mode&&<div className="modal-backdrop" onClick={()=>setMode(null)}><div className="modal" onClick={e=>e.stopPropagation()}><button className="close" onClick={()=>setMode(null)}>×</button><div className="modal-brand"><span className="brand-mark">N</span></div><span className="eyebrow">WELCOME TO NEONDO</span><h2>{mode==="login"?"Welcome back.":"Join the network."}</h2><p>{mode==="login"?"Log in to continue to your NEONDO profile.":"Create your profile and start connecting."}</p>{error&&<div className="auth-error">{error}</div>}{notice&&<div className="auth-notice">{notice}</div>}<button className="provider" disabled={busy} onClick={()=>oauth("google")}>Continue with Google <span>G</span></button><button className="provider" disabled={busy} onClick={()=>oauth("apple")}>Continue with Apple <span>●</span></button><div className="divider"><span>or</span></div>{mode==="signup"&&<input value={name} onChange={e=>setName(e.target.value)} placeholder="Full name"/>}<input value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email address" type="email"/><input value={password} onChange={e=>setPassword(e.target.value)} placeholder="Password" type="password"/><button className="primary full" disabled={busy||!email||!password} onClick={submit}>{busy?"Please wait…":mode==="login"?"Log in":"Create account"} <span>→</span></button><small>By continuing, you agree to NEONDO's Terms and Privacy Policy.</small></div></div>}
- </main>
+export default function Home() {
+  const supabase = getSupabase();
+  const [mode, setMode] = useState<"login" | "signup" | null>(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) location.href = "/dashboard";
+    });
+  }, [supabase]);
+
+  function open(m: "login" | "signup") { setMode(m); setError(""); setNotice(""); }
+
+  async function submit() {
+    setBusy(true); setError(""); setNotice("");
+    try {
+      if (mode === "signup") {
+        const { data, error } = await supabase.auth.signUp({ email, password, options: { data: { full_name: name } } });
+        if (error) throw error;
+        if (data.session) location.href = "/profile";
+        else setNotice("Check your email to confirm your account, then come back and log in.");
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        location.href = "/dashboard";
+      }
+    } catch (e: any) { setError(e.message || "Something went wrong. Please try again."); }
+    finally { setBusy(false); }
+  }
+
+  async function oauth(provider: "google" | "apple") {
+    setBusy(true); setError("");
+    const { error } = await supabase.auth.signInWithOAuth({ provider, options: { redirectTo: `${window.location.origin}/dashboard` } });
+    if (error) { setError(error.message); setBusy(false); }
+  }
+
+  return <main className="stagework-home">
+    <nav className="stage-nav">
+      <a className="stage-logo" href="#top"><span className="stage-logo-mark">N</span><span>NEONDO</span></a>
+      <div className="stage-nav-links"><a href="#opportunities">Opportunities</a><a href="#how">How it works</a><a href="#proof">The network</a></div>
+      <div className="stage-nav-actions"><button className="stage-login" onClick={() => open("login")}>Log in</button><button className="stage-black" onClick={() => open("signup")}>Join NEONDO <span>↗</span></button></div>
+    </nav>
+
+    <section id="top" className="stage-hero">
+      <div className="stage-hero-copy">
+        <div className="stage-label"><span /> BERLIN'S EVENT & CREATIVE NETWORK</div>
+        <h1>The people<br />behind <span>the moment.</span></h1>
+        <p>NEONDO connects the people who make Berlin's events happen — from DJs and photographers to stagehands, technicians, producers and hospitality crews.</p>
+        <div className="stage-hero-actions"><button className="stage-black stage-big" onClick={() => open("signup")}>Join the network <span>↗</span></button><a href="#opportunities" className="stage-underlink">Explore opportunities ↓</a></div>
+        <div className="stage-proofline"><b>01</b><span>One network for the whole event ecosystem.</span></div>
+      </div>
+      <div className="stage-art">
+        <div className="checker" />
+        <div className="stage-sticker">BERLIN<br /><b>CREW</b><br />NETWORK</div>
+        <div className="stage-phone">
+          <div className="phone-top"><b>NEONDO</b><span>•••</span></div>
+          <div className="phone-title"><small>OPEN OPPORTUNITY</small><strong>Night Production</strong><span>Berlin · Today · 18:00</span></div>
+          <div className="phone-person"><div className="fake-avatar">LK</div><div><b>Laura König</b><span>Production Lead</span></div><i>✓</i></div>
+          <div className="phone-tags"><span>STAGE</span><span>CREW</span><span>PAID</span></div>
+          <div className="phone-bottom"><b>€160</b><button onClick={() => open("signup")}>View shift →</button></div>
+        </div>
+        <div className="art-note">MAKE<br /><b>IT<br />HAPPEN.</b></div>
+      </div>
+    </section>
+
+    <section id="opportunities" className="stage-opps">
+      <div className="stage-section-head"><div><span className="stage-label">PAY-FORWARD OPPORTUNITIES</span><h2>Work that <i>moves.</i></h2></div><a href="#how">See all opportunities ↗</a></div>
+      <div className="opp-grid">{opportunities.map(([date, role, time, pay, tone]) => <article className={`opp-card ${tone}`} key={role}><div className="opp-top"><span>{date}</span><b>OPEN</b></div><h3>{role}</h3><p>{time} · Berlin</p><div className="opp-bottom"><strong>{pay}</strong><button onClick={() => open("signup")}>View ↗</button></div></article>)}</div>
+    </section>
+
+    <section id="how" className="stage-how">
+      <div className="how-intro"><span className="stage-label">HOW NEONDO WORKS</span><h2>Find. Do.<br /><i>Prove. Grow.</i></h2><p>One place to find the right people, take on great work and build a reputation that follows you.</p></div>
+      <div className="how-steps"><div><b>01</b><h3>FIND</h3><p>Discover shifts, projects and people that fit what you actually do.</p></div><div><b>02</b><h3>DO</h3><p>Take the opportunity. Show up. Make the event happen.</p></div><div><b>03</b><h3>PROVE</h3><p>Build your Scene CV through real work, references and reviews.</p></div><div><b>04</b><h3>GROW</h3><p>Turn good work into better opportunities and a stronger network.</p></div></div>
+    </section>
+
+    <section id="proof" className="stage-proof">
+      <div className="scene-card"><div className="scene-head"><span>SCENE CV</span><span>NEONDO / 01</span></div><div className="scene-profile"><div className="scene-avatar">AM</div><div><h3>Alex Morgan</h3><p>Production · Stage · Technical</p></div><span className="scene-check">✓</span></div><div className="scene-line"><span>Berlin</span><span>4 yrs experience</span><span>Available</span></div><div className="scene-bars"><i /><i /><i /><i /><i /><i /><i /></div><div className="scene-skills"><span>Stagehand</span><span>Production</span><span>Backline</span><span>Event Ops</span></div></div>
+      <div className="proof-copy"><span className="stage-label">YOUR WORK SPEAKS</span><h2>Build a profile<br />that <i>travels.</i></h2><p>Your NEONDO profile becomes your Scene CV — a living record of the work you do, the skills you bring and the people you've worked with.</p><button className="stage-black" onClick={() => open("signup")}>Build your profile <span>↗</span></button></div>
+    </section>
+
+    <section className="stage-organizer"><div><span className="stage-label">FOR ORGANIZERS & COMPANIES</span><h2>Good events<br />need <i>good people.</i></h2><p>Post a shift, find trusted crew and keep your whole production network in one place.</p></div><button className="stage-black" onClick={() => open("signup")}>I'm hiring <span>↗</span></button></section>
+
+    <footer className="stage-footer"><a className="stage-logo" href="#top"><span className="stage-logo-mark">N</span><span>NEONDO</span></a><span>Berlin · Built for the people behind the events.</span><span>© 2026</span></footer>
+
+    {mode && <div className="stage-modal-backdrop" onClick={() => setMode(null)}><div className="stage-modal" onClick={e => e.stopPropagation()}><button className="stage-close" onClick={() => setMode(null)}>×</button><div className="stage-logo-mark">N</div><span className="stage-label">WELCOME TO NEONDO</span><h2>{mode === "login" ? "Welcome back." : "Join the network."}</h2><p>{mode === "login" ? "Log in to continue to your NEONDO profile." : "Create your profile and start connecting."}</p>{error && <div className="auth-error">{error}</div>}{notice && <div className="auth-notice">{notice}</div>}<button className="stage-provider" disabled={busy} onClick={() => oauth("google")}>Continue with Google <b>G</b></button><button className="stage-provider" disabled={busy} onClick={() => oauth("apple")}>Continue with Apple <b>●</b></button><div className="stage-divider">or</div>{mode === "signup" && <input value={name} onChange={e => setName(e.target.value)} placeholder="Full name" /> }<input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email address" type="email" /><input value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" type="password" /><button className="stage-black stage-full" disabled={busy || !email || !password} onClick={submit}>{busy ? "Please wait…" : mode === "login" ? "Log in" : "Create account"} <span>↗</span></button><small>By continuing, you agree to NEONDO's Terms and Privacy Policy.</small></div></div>}
+  </main>;
 }
