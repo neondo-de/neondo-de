@@ -1,4 +1,5 @@
 "use client";
+import "../simple.css";
 import { useEffect, useState } from "react";
 import { getSupabase } from "@/lib/supabase";
 import { ArrowLeft, Bell, LogOut, Mail, Shield, UserRound } from "lucide-react";
