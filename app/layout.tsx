@@ -11,6 +11,7 @@ import "./public-profile.css";
 import "./settings-completion.css";
 import "./theme-preferences.css";
 import "./neondo-mobile-fixes.css";
+import "./sitewide-theme.css";
 import SitePreferences from "@/components/site-preferences";
 
 export const metadata: Metadata = { title:"NEONDO — Global event & creative network", description:"Discover events, connect with people, and find work and creative opportunities across cities worldwide." };
