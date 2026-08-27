@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "./detail.css";
 import "./stagework-home.css";
+import "./neondo-logo.css";
 import "./logo-overrides.css";
 import "./role-emblems.css";
 import "./profile-overrides.css";
