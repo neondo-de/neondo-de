@@ -1,0 +1,61 @@
+/* NEONDO mobile polish — visual fixes from real-device review */
+.stagework-home{width:100%;max-width:100vw;overflow-x:hidden}
+.stage-nav,.stage-hero,.stage-opps,.stage-how,.stage-proof,.stage-organizer,.stage-footer{max-width:100%;overflow:hidden}
+.stage-hero-copy{min-width:0}
+.stage-hero-copy>.stage-label{white-space:normal}
+.stage-hero-copy>.stage-label{font-size:0;color:#777}
+.stage-hero-copy>.stage-label::after{content:'GLOBAL EVENT & CREATIVE NETWORK';font-size:10px;letter-spacing:.16em;font-weight:800}
+.stage-hero-copy>.stage-label>span{display:inline-block}
+@media(max-width:900px){
+  .stage-hero-copy{padding-left:7%;padding-right:7%}
+  .stage-hero-copy>p{max-width:680px}
+  .stage-art{width:100%;}
+}
+@media(max-width:600px){
+  .stage-nav{height:72px;min-height:72px}
+  .stage-nav-actions{flex:0 0 auto}
+  .stage-nav-actions .stage-black{padding:12px 14px;font-size:11px}
+  .stage-hero-copy{padding:48px 5% 54px}
+  .stage-hero h1{font-size:clamp(48px,15vw,64px);line-height:.86;max-width:100%;overflow-wrap:normal}
+  .stage-hero-copy>p{font-size:15px;line-height:1.58;max-width:100%}
+  .stage-hero-actions{width:100%;gap:16px}
+  .stage-hero-actions .stage-big{width:100%;justify-content:space-between}
+  .stage-underlink{font-size:12px}
+  .stage-proofline{margin-top:34px;gap:11px;line-height:1.4}
+  .stage-art{min-height:455px}
+  .stage-phone{width:min(78vw,300px);padding:16px;box-shadow:10px 12px 0 #111}
+  .phone-title strong{font-size:23px}
+  .stage-sticker{left:4%;top:7%;padding:10px;font-size:10px}
+  .stage-sticker b{font-size:17px}
+  .art-note{right:4%;bottom:7%;font-size:12px}
+  .art-note b{font-size:28px}
+  .home-events-head h2{font-size:clamp(42px,12vw,58px);line-height:.94}
+  .home-events-tools{margin-top:30px}
+  .home-city{width:100%;max-width:100%}
+  .home-city input{width:100%;min-width:0}
+  .home-event-tabs{overflow-x:auto;padding-bottom:4px;gap:18px;white-space:nowrap;-webkit-overflow-scrolling:touch}
+  .home-event-grid{grid-template-columns:1fr;gap:12px}
+  .home-event-card{display:grid;grid-template-columns:112px 1fr auto;gap:10px;align-items:center;padding:8px}
+  .home-event-card img,.home-event-card .home-event-img{height:112px;grid-row:1 / span 2}
+  .home-event-info{padding:4px 0}
+  .home-event-info h3{font-size:16px}
+  .home-event-price{padding:0;align-self:end}
+  .home-event-genres{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}
+  .home-event-genres a{white-space:nowrap}
+  .stage-section-head h2{font-size:clamp(44px,12vw,54px)}
+  .opp-card{min-height:210px}
+  .stage-modal-backdrop{padding:12px;align-items:center;overflow-y:auto}
+  .stage-modal{width:100%;max-width:440px;max-height:calc(100dvh - 24px);overflow-y:auto;padding:28px 20px 22px;box-shadow:7px 7px #111}
+  .stage-modal h2{font-size:34px;padding-right:34px}
+  .stage-modal>p{font-size:14px;margin:0 0 16px}
+  .stage-provider,.stage-modal input,.stage-modal select{width:100%;min-height:48px;padding:13px 14px;margin-top:8px;border-radius:0}
+  .stage-modal select{display:block;background:#fff;color:#111;border:1px solid #111;font-size:13px;appearance:auto}
+  .stage-modal label{display:block;font-size:13px;line-height:1.35;color:inherit;margin-top:12px}
+  .stage-modal label select{margin-top:7px}
+  .stage-full{min-height:50px}
+  .stage-close{right:10px;top:10px;width:34px;height:34px;z-index:2}
+  .stage-footer{font-size:9px}
+}
+@media(min-width:601px){
+  .stage-hero-copy>.stage-label{font-size:10px}
+}
