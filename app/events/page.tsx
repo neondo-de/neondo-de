@@ -1,112 +1,24 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { CalendarDays, ChevronRight, MapPin, Search, Ticket, X } from "lucide-react";
+import { CalendarDays, ChevronRight, MapPin, Search, X } from "lucide-react";
 import { getSupabase } from "@/lib/supabase";
 
-type EventRow = {
-  id: string;
-  title: string;
-  event_type: string | null;
-  event_date: string;
-  venue: string | null;
-  location: string | null;
-  description: string | null;
-  status: string;
-};
+type EventRow = { id:string; title:string; event_type:string|null; event_date:string; venue:string|null; location:string|null; description:string|null; status:string };
+const categories=["All","Music","Nightlife","Culture","Sports","Community"];
+function formatDate(value:string){return new Date(`${value}T12:00:00`).toLocaleDateString("en-DE",{weekday:"short",day:"2-digit",month:"short"})}
+function normalizeCategory(value:string|null){const v=(value||"").toLowerCase();if(v.includes("music")||v.includes("concert")||v.includes("dj"))return "Music";if(v.includes("club")||v.includes("night")||v.includes("party"))return "Nightlife";if(v.includes("art")||v.includes("culture")||v.includes("theatre")||v.includes("museum"))return "Culture";if(v.includes("sport"))return "Sports";if(v.includes("community")||v.includes("market")||v.includes("meet"))return "Community";return "Other"}
 
-const categories = ["All", "Music", "Nightlife", "Culture", "Sports", "Community"];
-
-function formatDate(value: string) {
-  return new Date(`${value}T12:00:00`).toLocaleDateString("en-DE", {
-    weekday: "short",
-    day: "2-digit",
-    month: "short",
-  });
-}
-
-function normalizeCategory(value: string | null) {
-  const v = (value || "").toLowerCase();
-  if (v.includes("music") || v.includes("concert") || v.includes("dj")) return "Music";
-  if (v.includes("club") || v.includes("night") || v.includes("party")) return "Nightlife";
-  if (v.includes("art") || v.includes("culture") || v.includes("theatre") || v.includes("museum")) return "Culture";
-  if (v.includes("sport")) return "Sports";
-  if (v.includes("community") || v.includes("market") || v.includes("meet")) return "Community";
-  return "Other";
-}
-
-export default function EventsPage() {
-  const supabase = getSupabase();
-  const [events, setEvents] = useState<EventRow[]>([]);
-  const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("All");
-  const [day, setDay] = useState<"all" | "today" | "weekend">("all");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    let mounted = true;
-    (async () => {
-      const { data, error } = await supabase
-        .from("events")
-        .select("id,title,event_type,event_date,venue,location,description,status")
-        .neq("status", "draft")
-        .order("event_date", { ascending: true })
-        .limit(100);
-      if (!mounted) return;
-      if (error) setError("We couldn't load events right now.");
-      setEvents((data || []) as EventRow[]);
-      setLoading(false);
-    })();
-    return () => { mounted = false; };
-  }, [supabase]);
-
-  const filtered = useMemo(() => {
-    const now = new Date();
-    const today = now.toISOString().slice(0, 10);
-    const end = new Date(now);
-    end.setDate(now.getDate() + (6 - now.getDay() + 7) % 7);
-    const weekendEnd = end.toISOString().slice(0, 10);
-    const q = query.trim().toLowerCase();
-    return events.filter((event) => {
-      const haystack = `${event.title} ${event.event_type || ""} ${event.venue || ""} ${event.location || ""}`.toLowerCase();
-      const matchesQuery = !q || haystack.includes(q);
-      const matchesCategory = category === "All" || normalizeCategory(event.event_type) === category;
-      const matchesDay = day === "all" || (day === "today" ? event.event_date === today : event.event_date <= weekendEnd);
-      return matchesQuery && matchesCategory && matchesDay;
-    });
-  }, [events, query, category, day]);
-
-  return (
-    <main className="events-page">
-      <nav className="events-nav">
-        <a href="/" className="events-logo"><span>NEON</span><b>DO</b><i /></a>
-        <div className="events-nav-links"><a className="active" href="/events">Events</a><a href="/dashboard">Opportunities</a><a href="/#how">How it works</a></div>
-        <div className="events-nav-actions"><a href="/dashboard">Log in</a><a className="events-join" href="/?signup=1">Join NEONDO <span>↗</span></a></div>
-      </nav>
-
-      <section className="events-hero">
-        <div>
-          <span className="stage-label"><span className="event-pulse" /> BERLIN · LIVE DISCOVERY</span>
-          <h1>What’s <i>happening.</i></h1>
-          <p>Find the events, nights and things worth showing up for — all in one place.</p>
-        </div>
-        <div className="events-location"><MapPin size={17} /><span>Berlin, Germany</span><ChevronRight size={16} /></div>
-      </section>
-
-      <section className="events-content">
-        <div className="events-toolbar">
-          <div className="events-search"><Search size={18} /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search events, venues or places" /><button aria-label="Clear search" onClick={() => setQuery("")}><X size={15} /></button></div>
-          <div className="events-days"><button className={day === "all" ? "selected" : ""} onClick={() => setDay("all")}>All</button><button className={day === "today" ? "selected" : ""} onClick={() => setDay("today")}>Today</button><button className={day === "weekend" ? "selected" : ""} onClick={() => setDay("weekend")}>This weekend</button></div>
-        </div>
-        <div className="event-categories">{categories.map((item) => <button key={item} className={category === item ? "selected" : ""} onClick={() => setCategory(item)}>{item}</button>)}</div>
-
-        <div className="events-heading"><div><span className="stage-label">IN BERLIN</span><h2>{day === "today" ? "Today" : day === "weekend" ? "This weekend" : "Upcoming events"}</h2></div><span>{filtered.length} {filtered.length === 1 ? "event" : "events"}</span></div>
-
-        {loading ? <div className="events-empty"><CalendarDays size={26} /><h3>Loading the city…</h3><p>Finding what’s happening in Berlin.</p></div> : error ? <div className="events-empty"><h3>Events are temporarily unavailable.</h3><p>Please try again in a moment.</p></div> : filtered.length === 0 ? <div className="events-empty"><CalendarDays size={26} /><h3>No events yet.</h3><p>Once events are published to NEONDO, they’ll appear here automatically.</p></div> : <div className="event-grid">{filtered.map((event) => <article className="event-card" key={event.id}><div className="event-date"><b>{formatDate(event.event_date).split(" ")[1]}</b><span>{formatDate(event.event_date).split(" ")[0]}</span></div><div className="event-card-main"><span className="event-type">{normalizeCategory(event.event_type)}</span><h3>{event.title}</h3><p>{event.venue || "Berlin"}{event.location ? ` · ${event.location}` : ""}</p>{event.description && <div className="event-description">{event.description}</div>}</div><a className="event-arrow" href={`/events/${event.id}`} aria-label={`View ${event.title}`}><ChevronRight size={19} /></a></article>)}</div>}
-      </section>
-
-      <section className="events-footer-cta"><div><span className="stage-label">MAKE THE CITY YOURS</span><h2>Go where the<br /><i>moment is.</i></h2></div><p>NEONDO brings work and city life together, so you can discover what’s happening and the people making it happen.</p></section>
-    </main>
-  );
+export default function EventsPage(){
+ const supabase=getSupabase();const [events,setEvents]=useState<EventRow[]>([]);const [query,setQuery]=useState("");const [category,setCategory]=useState("All");const [day,setDay]=useState<"all"|"today"|"weekend">("all");const [loading,setLoading]=useState(true);const [error,setError]=useState("");
+ useEffect(()=>{let mounted=true;(async()=>{const {data,error}=await supabase.from("events").select("id,title,event_type,event_date,venue,location,description,status").neq("status","draft").order("event_date",{ascending:true}).limit(100);if(!mounted)return;if(error)setError("We couldn't load events right now.");setEvents((data||[]) as EventRow[]);setLoading(false)})();return()=>{mounted=false}},[supabase]);
+ const filtered=useMemo(()=>{const now=new Date();const today=now.toISOString().slice(0,10);const end=new Date(now);end.setDate(now.getDate()+(6-now.getDay()+7)%7);const weekendEnd=end.toISOString().slice(0,10);const q=query.trim().toLowerCase();return events.filter(event=>{const haystack=`${event.title} ${event.event_type||""} ${event.venue||""} ${event.location||""}`.toLowerCase();return(!q||haystack.includes(q))&&(category==="All"||normalizeCategory(event.event_type)===category)&&(day==="all"||(day==="today"?event.event_date===today:event.event_date<=weekendEnd))})},[events,query,category,day]);
+ return <main className="events-page"><nav className="events-nav"><a href="/" className="events-logo"><span>NEON</span><b>DO</b><i/></a><div className="events-nav-links"><a className="active" href="/events">Events</a><a href="/dashboard">Opportunities</a><a href="/#how">How it works</a></div><div className="events-nav-actions"><a href="/dashboard">Log in</a><a className="events-join" href="/?signup=1">Join NEONDO <span>↗</span></a></div></nav>
+ <section className="events-hero"><div><span className="stage-label"><span className="event-pulse"/> BERLIN · LIVE DISCOVERY</span><h1>What’s <i>happening.</i></h1><p>Find the events, nights and things worth showing up for — all in one place.</p></div><div className="events-location"><MapPin size={17}/><span>Berlin, Germany</span><ChevronRight size={16}/></div></section>
+ <section className="events-content"><div className="events-toolbar"><div className="events-search"><Search size={18}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search events, venues or places"/><button aria-label="Clear search" onClick={()=>setQuery("")}><X size={15}/></button></div><div className="events-days"><button className={day==="all"?"selected":""} onClick={()=>setDay("all")}>All</button><button className={day==="today"?"selected":""} onClick={()=>setDay("today")}>Today</button><button className={day==="weekend"?"selected":""} onClick={()=>setDay("weekend")}>This weekend</button></div></div><div className="event-categories">{categories.map(item=><button key={item} className={category===item?"selected":""} onClick={()=>setCategory(item)}>{item}</button>)}</div>
+ <div className="events-heading"><div><span className="stage-label">IN BERLIN</span><h2>{day==="today"?"Today":day==="weekend"?"This weekend":"Upcoming events"}</h2></div><span>{filtered.length} {filtered.length===1?"event":"events"}</span></div>
+ {loading?<div className="events-empty"><CalendarDays size={26}/><h3>Loading the city…</h3><p>Finding what’s happening in Berlin.</p></div>:error?<div className="events-empty"><h3>Events are temporarily unavailable.</h3><p>Please try again in a moment.</p></div>:filtered.length===0?<div className="events-empty"><CalendarDays size={26}/><h3>No events yet.</h3><p>Once events are published to NEONDO, they’ll appear here automatically.</p></div>:<div className="event-grid">{filtered.map(event=><article className="event-card" key={event.id}><div className="event-date"><b>{formatDate(event.event_date).split(" ")[1]}</b><span>{formatDate(event.event_date).split(" ")[0]}</span></div><div className="event-card-main"><span className="event-type">{normalizeCategory(event.event_type)}</span><h3>{event.title}</h3><p>{event.venue||"Berlin"}{event.location?` · ${event.location}`:""}</p>{event.description&&<div className="event-description">{event.description}</div>}</div><a className="event-arrow" href={`/events/${event.id}`} aria-label={`View ${event.title}`}><ChevronRight size={19}/></a></article>)}</div>}</section>
+ <section className="events-footer-cta"><div><span className="stage-label">MAKE THE CITY YOURS</span><h2>Go where the<br/><i>moment is.</i></h2></div><p>NEONDO brings work and city life together, so you can discover what’s happening and the people making it happen.</p></section>
+ <style jsx global>{`.events-page{min-height:100vh;background:#f5f4ef;color:#11120f}.events-nav{height:82px;display:flex;align-items:center;justify-content:space-between;padding:0 6%;border-bottom:1px solid #d9d9d1;background:rgba(245,244,239,.92);backdrop-filter:blur(12px);position:sticky;top:0;z-index:5}.events-logo{font:700 20px 'Space Grotesk',sans-serif;letter-spacing:-.06em}.events-logo span{color:#696b63;font-weight:500}.events-logo b{color:#11120f}.events-logo i{display:inline-block;width:5px;height:5px;border-radius:50%;background:#e5484d;margin-left:5px}.events-nav-links{display:flex;gap:34px;font-size:13px;color:#696b63}.events-nav-links a.active,.events-nav-links a:hover{color:#11120f}.events-nav-actions{display:flex;align-items:center;gap:18px;font-size:13px}.events-join{background:#11120f;color:#fff;border-radius:999px;padding:12px 17px;font-weight:700}.events-join span{color:#d7ff3f;margin-left:8px}.events-hero{padding:90px 7% 70px;display:flex;align-items:end;justify-content:space-between;gap:40px;border-bottom:1px solid #d9d9d1}.events-hero h1{font-size:clamp(58px,8vw,110px);line-height:.88;letter-spacing:-.065em;margin:18px 0 24px}.events-hero h1 i,.events-footer-cta h2 i{font-style:normal;color:#7f941d}.events-hero p{max-width:580px;color:#696b63;font-size:17px;line-height:1.6;margin:0}.event-pulse{display:inline-block;width:7px;height:7px;background:#9fbe20;border-radius:50%;margin-right:8px;box-shadow:0 0 0 5px rgba(159,190,32,.12)}.events-location{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid #dddcd4;border-radius:999px;padding:12px 15px;font-size:12px;font-weight:600;white-space:nowrap}.events-location svg:first-child{color:#7f941d}.events-content{padding:55px 7% 90px}.events-toolbar{display:grid;grid-template-columns:1fr auto;gap:15px}.events-search{height:54px;background:#fff;border:1px solid #dddcd4;border-radius:13px;display:flex;align-items:center;gap:11px;padding:0 15px;color:#888980}.events-search input{border:0;outline:0;flex:1;background:transparent;font:inherit;font-size:13px;color:#11120f}.events-search button{border:0;background:none;color:#888980}.events-days,.event-categories{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.events-days button,.event-categories button{border:1px solid #dddcd4;background:transparent;border-radius:999px;padding:11px 14px;font-size:11px;font-weight:700;color:#696b63}.events-days button.selected,.event-categories button.selected{background:#11120f;color:#fff;border-color:#11120f}.event-categories{margin:18px 0 55px}.event-categories button{padding:9px 13px}.events-heading{display:flex;align-items:end;justify-content:space-between;margin-bottom:20px}.events-heading h2{font-size:34px;letter-spacing:-.05em;margin-top:8px}.events-heading>span{font-size:11px;color:#85877e}.event-grid{display:grid;gap:10px}.event-card{display:grid;grid-template-columns:90px 1fr 45px;gap:22px;align-items:center;background:#fff;border:1px solid #e1e0d8;border-radius:18px;padding:20px 22px;transition:transform .15s,box-shadow .15s}.event-card:hover{transform:translateY(-2px);box-shadow:0 14px 35px rgba(17,18,15,.07)}.event-date{border-right:1px solid #e6e5de;display:flex;flex-direction:column;gap:2px}.event-date b{font:700 26px 'Space Grotesk',sans-serif}.event-date span{font-size:10px;color:#85877e;text-transform:uppercase;letter-spacing:.12em}.event-type{font-size:9px;font-weight:800;letter-spacing:.13em;color:#7f941d}.event-card-main h3{font-size:19px;margin:5px 0 5px}.event-card-main p{font-size:11px;color:#85877e;margin:0}.event-description{font-size:12px;line-height:1.5;color:#696b63;margin-top:10px;max-width:700px}.event-arrow{width:36px;height:36px;border-radius:50%;background:#f0f0e9;display:grid;place-items:center}.events-empty{text-align:center;border:1px dashed #c9c8bf;border-radius:18px;padding:75px 20px;color:#7b7d74}.events-empty svg{color:#82991d;margin-bottom:8px}.events-empty h3{font-size:19px;margin:8px 0}.events-empty p{font-size:12px;margin:0}.events-footer-cta{margin:0 7% 70px;background:#181916;color:#fff;border-radius:28px;padding:60px 65px;display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:end}.events-footer-cta h2{font-size:54px;line-height:.95;letter-spacing:-.05em;margin-top:12px}.events-footer-cta p{color:#b7b8af;font-size:14px;line-height:1.7;max-width:480px;margin:0}.event-detail-page{min-height:100vh;background:#f5f4ef}.event-back{font-size:12px;color:#696b63;display:flex;align-items:center;gap:7px}.event-detail{max-width:900px;margin:0 auto;padding:100px 30px}.event-detail h1{font-size:clamp(48px,7vw,86px);line-height:.94;letter-spacing:-.06em;margin:18px 0 30px}.event-detail-meta{display:flex;flex-wrap:wrap;gap:15px;margin-bottom:35px}.event-detail-meta span{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #dddcd4;border-radius:999px;padding:12px 15px;font-size:12px}.event-detail>p{font-size:16px;line-height:1.75;color:#696b63;max-width:700px}.event-place{margin-top:40px;padding:20px;background:#fff;border:1px solid #dddcd4;border-radius:16px;display:flex;flex-direction:column;gap:5px}.event-place span{font-size:12px;color:#85877e}.event-detail-loading{min-height:100vh;display:grid;place-items:center;align-content:center;gap:12px;background:#f5f4ef}.event-detail-loading a{font-size:13px;font-weight:700}@media(max-width:800px){.events-nav-links{display:none}.events-nav{padding:0 5%}.events-nav-actions>a:first-child{display:none}.events-hero{padding:65px 5% 50px;display:block}.events-location{display:inline-flex;margin-top:28px}.events-content{padding:40px 5% 70px}.events-toolbar{grid-template-columns:1fr}.events-days{justify-content:flex-start}.event-categories{margin-bottom:40px}.event-card{grid-template-columns:60px 1fr 35px;gap:13px;padding:16px}.event-date b{font-size:22px}.event-card-main h3{font-size:16px}.events-footer-cta{margin:0 5% 50px;padding:40px 28px;grid-template-columns:1fr;gap:25px}.events-footer-cta h2{font-size:44px}}`}</style>
+ </main>;
 }
