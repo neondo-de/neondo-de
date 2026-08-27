@@ -1,0 +1,32 @@
+/* NEONDO site-wide theme: every route uses the same homepage palette. */
+:root{--bg:#f5f4ef;--ink:#11120f;--muted:#696b63;--line:#d9d9d1;--accent:#d7ff3f;--dark:#181916}
+html,body{background:var(--bg);color:var(--ink)}
+/* Light mode surfaces */
+.dashboard,.profile-page{background:var(--bg)!important;color:var(--ink)}
+.sidebar{background:#f3f2ec!important;color:var(--ink);border-color:var(--line)!important}
+.sidebar nav a{color:#66685f}.sidebar nav a.active,.sidebar nav a:hover{background:#e4e4dc;color:var(--ink)}
+.dashboard-main,.profile-form,.profile-top{color:var(--ink)}
+.searchbar,.shift-item,.view,.form-grid input,.form-grid select,.form-grid textarea,.skill-add select,.document-item,.document-actions button,.upload-drop,.provider,.modal input{background:#fff;color:var(--ink);border-color:var(--line)}
+/* Dark mode: same visual language as the homepage */
+.neondo-dark{--bg:#11120f;--ink:#f3f4ed;--muted:#b8bbb0;--line:#34372f;--accent:#d7ff3f;--dark:#f3f4ed}
+.neondo-dark html,.neondo-dark body{background:#11120f!important;color:#f3f4ed!important}
+.neondo-dark .site-shell,.neondo-dark .dashboard,.neondo-dark .profile-page{background:#11120f!important;color:#f3f4ed!important}
+.neondo-dark .nav,.neondo-dark .profile-top{background:rgba(17,18,15,.94)!important;color:#f3f4ed!important;border-color:#34372f!important}
+.neondo-dark .nav-links,.neondo-dark .profile-top>a{color:#b8bbb0}.neondo-dark .nav-links a:hover{color:#fff}
+.neondo-dark .sidebar{background:#191b17!important;color:#f3f4ed;border-color:#34372f!important}
+.neondo-dark .sidebar nav a{color:#b8bbb0}.neondo-dark .sidebar nav a.active,.neondo-dark .sidebar nav a:hover{background:#292c25;color:#f3f4ed}
+.neondo-dark .dashboard-main,.neondo-dark .profile-form,.neondo-dark .profile-top,.neondo-dark .dash-header,.neondo-dark .profile-section{color:#f3f4ed}
+.neondo-dark .dash-header p,.neondo-dark .profile-form>p,.neondo-dark .section-note,.neondo-dark .shift-date,.neondo-dark .shift-info p,.neondo-dark .empty p,.neondo-dark .form-grid label,.neondo-dark .document-item span{color:#b8bbb0!important}
+.neondo-dark .searchbar,.neondo-dark .shift-item,.neondo-dark .view,.neondo-dark .form-grid input,.neondo-dark .form-grid select,.neondo-dark .form-grid textarea,.neondo-dark .skill-add select,.neondo-dark .document-item,.neondo-dark .document-actions button,.neondo-dark .upload-drop,.neondo-dark .provider,.neondo-dark .modal input{background:#191b17!important;color:#f3f4ed!important;border-color:#34372f!important}
+.neondo-dark .searchbar input,.neondo-dark .form-grid input::placeholder,.neondo-dark .form-grid textarea::placeholder,.neondo-dark .modal input::placeholder{color:#8f9388!important}
+.neondo-dark .primary,.neondo-dark .skill-add button,.neondo-dark .dash-section-head button{background:#f3f4ed!important;color:#11120f!important}.neondo-dark .primary span{color:#6f8613!important}
+.neondo-dark .ghost,.neondo-dark .text-button,.neondo-dark .logout{color:#b8bbb0}.neondo-dark .ghost:hover{background:#292c25}
+.neondo-dark .skill-list span{background:#f3f4ed;color:#11120f}.neondo-dark .document-actions button{color:#f3f4ed}.neondo-dark .upload-drop strong{color:#f3f4ed}.neondo-dark .upload-drop span{color:#9da097}
+.neondo-dark .profile-alert{background:#291b19;border-color:#6b3b34;color:#f2b7ad}
+/* Fixed-color artwork keeps its intended black/white contrast in both modes. */
+.neondo-dark .stage-art,.neondo-dark .stage-sticker,.neondo-dark .art-note{color:#111!important}
+.neondo-dark .stage-phone{background:#f8f5ed!important;color:#111!important;border-color:#111!important}
+.neondo-dark .stage-phone *{border-color:#bbb8ae}.neondo-dark .stage-phone strong,.neondo-dark .stage-phone b{color:#111!important}.neondo-dark .stage-phone small,.neondo-dark .stage-phone span{color:#6d6a62}
+/* Prevent inherited theme colors from becoming invisible on explicit light cards. */
+.neondo-dark .opp-card.lime,.neondo-dark .opp-card.pink{color:#111!important}.neondo-dark .opp-card.blue{color:#fff!important}
+.neondo-dark .scene-card{background:#f5f2ea!important;color:#111!important}
