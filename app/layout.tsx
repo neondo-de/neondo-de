@@ -10,6 +10,7 @@ import "./app-pages.css";
 import "./public-profile.css";
 import "./settings-completion.css";
 import "./theme-preferences.css";
+import "./neondo-mobile-fixes.css";
 import SitePreferences from "@/components/site-preferences";
 
 export const metadata: Metadata = { title:"NEONDO — Berlin's event crew network", description:"Connect event professionals, crews and opportunities across Berlin." };
