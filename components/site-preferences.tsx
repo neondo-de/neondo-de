@@ -1,29 +1,65 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
-type Lang = "EN" | "DE" | "PL" | "FR" | "ES" | "IT" | "AR";
-const labels: Record<Lang, string> = { EN: "English", DE: "Deutsch", PL: "Polski", FR: "Français", ES: "Español", IT: "Italiano", AR: "العربية" };
+export type Lang = "en" | "de" | "es" | "fr" | "ar" | "zh";
 
-export default function SitePreferences(){
-  const [dark,setDark]=useState(false);
-  const [lang,setLang]=useState<Lang>("EN");
-  const [open,setOpen]=useState(false);
-  useEffect(()=>{
-    const saved=localStorage.getItem("neondo-theme");
-    const savedLang=localStorage.getItem("neondo-language") as Lang|null;
-    const prefers=window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const next=saved ? saved==="dark" : prefers;
-    setDark(next); document.documentElement.classList.toggle("neondo-dark",next);
-    if(savedLang && labels[savedLang]){ setLang(savedLang); document.documentElement.lang=savedLang.toLowerCase(); }
-  },[]);
-  function toggleTheme(){const next=!dark;setDark(next);document.documentElement.classList.toggle("neondo-dark",next);localStorage.setItem("neondo-theme",next?"dark":"light")}
-  function choose(next:Lang){setLang(next);setOpen(false);localStorage.setItem("neondo-language",next);document.documentElement.lang=next.toLowerCase()}
-  return <div className="neondo-preferences" aria-label="Site preferences">
-    <button className="neondo-theme-toggle" onClick={toggleTheme} aria-label={dark?"Switch to light mode":"Switch to dark mode"} title={dark?"Light mode":"Dark mode"}>{dark?"☀":"◐"}</button>
-    <div className="neondo-language">
-      <button className="neondo-language-trigger" onClick={()=>setOpen(v=>!v)} aria-expanded={open} aria-haspopup="listbox"><span>{lang}</span><b>{labels[lang]}</b><i>⌄</i></button>
-      {open&&<div className="neondo-language-menu" role="listbox">{(Object.keys(labels) as Lang[]).map(code=><button key={code} role="option" aria-selected={code===lang} className={code===lang?"active":""} onClick={()=>choose(code)}><span>{code}</span>{labels[code]}</button>)}</div>}
-    </div>
-  </div>
+export interface SitePreferencesContextValue {
+  lang: Lang;
+  setLang: (lang: Lang) => void;
+  theme: "light" | "dark" | "system";
+  setTheme: (theme: "light" | "dark" | "system") => void;
+}
+
+const SitePreferencesContext = createContext<SitePreferencesContextValue | null>(null);
+
+export function useSitePreferences() {
+  const ctx = useContext(SitePreferencesContext);
+  if (!ctx) throw new Error("useSitePreferences must be used within SitePreferences");
+  return ctx;
+}
+
+export default function SitePreferences({ children }: { children?: ReactNode }) {
+  const [lang, setLangState] = useState<Lang>("en");
+  const [theme, setThemeState] = useState<"light" | "dark" | "system">("system");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const storedLang = localStorage.getItem("neondo_lang") as Lang | null;
+    const storedTheme = localStorage.getItem("neondo_theme") as "light" | "dark" | "system" | null;
+    if (storedLang) setLangState(storedLang);
+    if (storedTheme) setThemeState(storedTheme);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+    localStorage.setItem("neondo_lang", lang);
+  }, [lang, mounted]);
+
+  useEffect(() => {
+    if (!mounted) return;
+    const root = document.documentElement;
+    const applyTheme = (t: "light" | "dark" | "system") => {
+      if (t === "system") {
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        root.classList.toggle("dark", prefersDark);
+      } else {
+        root.classList.toggle("dark", t === "dark");
+      }
+    };
+    applyTheme(theme);
+    localStorage.setItem("neondo_theme", theme);
+  }, [theme, mounted]);
+
+  const setLang = (newLang: Lang) => setLangState(newLang);
+  const setTheme = (newTheme: "light" | "dark" | "system") => setThemeState(newTheme);
+
+  return (
+    <SitePreferencesContext.Provider value={{ lang, setLang, theme, setTheme }}>
+      {children}
+    </SitePreferencesContext.Provider>
+  );
 }
