@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { CalendarDays, ChevronRight, MapPin, Search } from "lucide-react";
 import { getSupabase } from "@/lib/supabase";
 
-const Logo=()=> <span className="stage-logo" aria-label="NEONDO"><span className="stage-logo-mark">N</span><span/></span>;
+const Logo=()=> <span className="stage-logo" aria-label="NEONDO"><span className="stage-logo-mark">N</span><span className="neondo-word"><b>NEON</b><strong>DO</strong></span></span>;
 const opportunities=[["TONIGHT","Stagehand","18:00 — 02:00","€120","lime"],["FRI 28 AUG","Event Photographer","19:00 — 00:00","€220","pink"],["SAT 29 AUG","Content Creator","20:00 — 01:00","€180","blue"]];
 
 type EventRow={id:string;title:string;event_type:string|null;event_date:string;venue:string|null;city:string|null;image_url:string|null;price_from:number|null};
