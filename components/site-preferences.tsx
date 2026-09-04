@@ -14,10 +14,12 @@ export default function SitePreferences(){
     const savedLang=localStorage.getItem("neondo-language") as Lang|null;
     const prefers=window.matchMedia("(prefers-color-scheme: dark)").matches;
     const next=saved ? saved==="dark" : prefers;
-    setDark(next); document.documentElement.classList.toggle("neondo-dark",next);
+    setDark(next);
+    document.documentElement.classList.toggle("neondo-dark",next);
+    document.documentElement.style.colorScheme=next?"dark":"light";
     if(savedLang && labels[savedLang]){ setLang(savedLang); document.documentElement.lang=savedLang.toLowerCase(); }
   },[]);
-  function toggleTheme(){const next=!dark;setDark(next);document.documentElement.classList.toggle("neondo-dark",next);localStorage.setItem("neondo-theme",next?"dark":"light")}
+  function toggleTheme(){const next=!dark;setDark(next);document.documentElement.classList.toggle("neondo-dark",next);document.documentElement.style.colorScheme=next?"dark":"light";localStorage.setItem("neondo-theme",next?"dark":"light")}
   function choose(next:Lang){setLang(next);setOpen(false);localStorage.setItem("neondo-language",next);document.documentElement.lang=next.toLowerCase()}
   return <div className="neondo-preferences" aria-label="Site preferences">
     <button className="neondo-theme-toggle" onClick={toggleTheme} aria-label={dark?"Switch to light mode":"Switch to dark mode"} title={dark?"Light mode":"Dark mode"}>{dark?"☀":"◐"}</button>
