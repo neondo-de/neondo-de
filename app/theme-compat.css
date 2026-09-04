@@ -1,0 +1,91 @@
+/* NEONDO theme contract — final shared light/dark compatibility layer. */
+:root{
+  --neondo-light-bg:#f5f2ea;
+  --neondo-light-surface:#fbfaf6;
+  --neondo-light-card:#fff;
+  --neondo-ink:#11120f;
+  --neondo-muted:#6f7169;
+  --neondo-line:#11120f;
+  --neondo-soft-line:#d4d1c8;
+  --neondo-lime:#d7ff3f;
+  --neondo-pink:#f25aa8;
+  --neondo-blue:#315cf5;
+}
+html{background:var(--neondo-light-bg);color:var(--neondo-ink);color-scheme:light}
+body{background:var(--neondo-light-bg);color:var(--neondo-ink)}
+
+/* Shared light surfaces. */
+.dashboard,.company-shell,.simple-page,.schedule-page,.shift-detail,.profile-page,.not-found{background:var(--neondo-light-bg)!important;color:var(--neondo-ink)!important}
+.sidebar{background:var(--neondo-ink)!important;color:var(--neondo-light-bg)!important;border-color:var(--neondo-line)!important}
+.sidebar .stage-logo,.sidebar .brand{color:var(--neondo-light-bg)!important}
+.sidebar nav a{color:#aaa9a0!important}
+.sidebar nav a.active,.sidebar nav a:hover{background:#24251f!important;color:#fff!important}
+.searchbar,.shift-item,.company-shifts article,.simple-card,.chat-card,.setting-row,.schedule-item,.detail-meta>div,.detail-nav,.profile-top,.document-item,.upload-drop,.view,.form-grid input,.form-grid select,.form-grid textarea,.skill-add select,.document-actions button,.provider,.modal input,.company-form-grid input,.company-form-grid select,.company-form-grid textarea{background:var(--neondo-light-card)!important;color:var(--neondo-ink)!important;border-color:var(--neondo-soft-line)!important}
+.detail-nav,.profile-top{background:var(--neondo-light-bg)!important;border-color:var(--neondo-line)!important}
+.simple-card,.chat-card{border-color:var(--neondo-line)!important}
+.searchbar,.shift-item,.company-shifts article,.schedule-item{border-color:var(--neondo-line)!important}
+.simple-list article,.notice-item,.review-list article{color:var(--neondo-ink)!important;border-color:#bbb8ae!important}
+.simple-list article span,.muted,.simple-card .muted,.detail-role,.detail-description p,.schedule-content>p,.company-header p,.company-shifts article p,.shift-info p,.shift-date,.document-item span,.section-note{color:var(--neondo-muted)!important}
+
+/* Buttons and controls. */
+.primary,.company-primary,.skill-add button,.form-actions>button,.dash-section-head button,.composer button{background:var(--neondo-ink)!important;color:#fff!important;border-color:var(--neondo-ink)!important}
+.primary span,.company-primary span{color:var(--neondo-lime)!important}
+.ghost,.text-button,.logout,.back-link,.detail-nav>a,.profile-top>a{color:var(--neondo-muted)!important}
+.filters button,.setting-button,.view,.document-actions button,.application-actions button{color:var(--neondo-ink)!important;background:var(--neondo-light-card)!important;border-color:var(--neondo-line)!important}
+.filters button.selected,.filters button:hover,.setting-button:hover{background:var(--neondo-lime)!important;color:var(--neondo-ink)!important;border-color:var(--neondo-line)!important}
+
+/* Inputs always inherit the active mode cleanly. */
+input,select,textarea{color:var(--neondo-ink)}
+input::placeholder,textarea::placeholder{color:#85867f;opacity:1}
+
+/* Homepage fixed-color artwork retains its intended contrast. */
+.stage-art{color:var(--neondo-ink)}
+.stage-phone{background:#f8f5ed;color:var(--neondo-ink);border-color:var(--neondo-ink)}
+.stage-sticker,.art-note{color:var(--neondo-ink)}
+.opp-card.lime{background:var(--neondo-lime);color:var(--neondo-ink)}
+.opp-card.pink{background:var(--neondo-pink);color:var(--neondo-ink)}
+.opp-card.blue{background:var(--neondo-blue);color:#fff}
+.scene-card{background:var(--neondo-light-bg);color:var(--neondo-ink)}
+
+/* Correct dark-mode contract: class is on <html>. */
+html.neondo-dark{background:#11120f;color:#f3f4ed;color-scheme:dark;--bg:#11120f;--ink:#f3f4ed;--muted:#b8bbb0;--line:#34372f;--accent:#d7ff3f;--dark:#f3f4ed}
+html.neondo-dark body{background:#11120f!important;color:#f3f4ed!important}
+html.neondo-dark .dashboard,html.neondo-dark .company-shell,html.neondo-dark .simple-page,html.neondo-dark .schedule-page,html.neondo-dark .shift-detail,html.neondo-dark .profile-page,html.neondo-dark .not-found{background:#11120f!important;color:#f3f4ed!important}
+html.neondo-dark .sidebar{background:#191b17!important;color:#f3f4ed!important;border-color:#34372f!important}
+html.neondo-dark .sidebar nav a{color:#b8bbb0!important}
+html.neondo-dark .sidebar nav a.active,html.neondo-dark .sidebar nav a:hover{background:#292c25!important;color:#f3f4ed!important}
+html.neondo-dark .searchbar,html.neondo-dark .shift-item,html.neondo-dark .company-shifts article,html.neondo-dark .simple-card,html.neondo-dark .chat-card,html.neondo-dark .setting-row,html.neondo-dark .schedule-item,html.neondo-dark .detail-meta>div,html.neondo-dark .document-item,html.neondo-dark .upload-drop,html.neondo-dark .view,html.neondo-dark .form-grid input,html.neondo-dark .form-grid select,html.neondo-dark .form-grid textarea,html.neondo-dark .skill-add select,html.neondo-dark .document-actions button,html.neondo-dark .provider,html.neondo-dark .modal input,html.neondo-dark .company-form-grid input,html.neondo-dark .company-form-grid select,html.neondo-dark .company-form-grid textarea{background:#191b17!important;color:#f3f4ed!important;border-color:#34372f!important}
+html.neondo-dark .detail-nav,html.neondo-dark .profile-top{background:#11120f!important;color:#f3f4ed!important;border-color:#34372f!important}
+html.neondo-dark .simple-card,html.neondo-dark .chat-card{border-color:#34372f!important}
+html.neondo-dark .simple-list article,html.neondo-dark .notice-item,html.neondo-dark .review-list article{color:#f3f4ed!important;border-color:#45483f!important}
+html.neondo-dark .simple-list article span,html.neondo-dark .muted,html.neondo-dark .simple-card .muted,html.neondo-dark .detail-role,html.neondo-dark .detail-description p,html.neondo-dark .schedule-content>p,html.neondo-dark .company-header p,html.neondo-dark .company-shifts article p,html.neondo-dark .shift-info p,html.neondo-dark .shift-date,html.neondo-dark .document-item span,html.neondo-dark .section-note{color:#b8bbb0!important}
+html.neondo-dark .primary,html.neondo-dark .company-primary,html.neondo-dark .skill-add button,html.neondo-dark .form-actions>button,html.neondo-dark .dash-section-head button,html.neondo-dark .composer button{background:#f3f4ed!important;color:#11120f!important;border-color:#f3f4ed!important}
+html.neondo-dark .primary span,html.neondo-dark .company-primary span{color:#6f8613!important}
+html.neondo-dark .ghost,html.neondo-dark .text-button,html.neondo-dark .logout,html.neondo-dark .back-link,html.neondo-dark .detail-nav>a,html.neondo-dark .profile-top>a{color:#b8bbb0!important}
+html.neondo-dark .filters button,html.neondo-dark .setting-button,html.neondo-dark .view,html.neondo-dark .document-actions button,html.neondo-dark .application-actions button{color:#f3f4ed!important;background:#191b17!important;border-color:#34372f!important}
+html.neondo-dark .filters button.selected,html.neondo-dark .filters button:hover,html.neondo-dark .setting-button:hover{background:#d7ff3f!important;color:#11120f!important;border-color:#d7ff3f!important}
+html.neondo-dark input,html.neondo-dark select,html.neondo-dark textarea{color:#f3f4ed!important;background:#191b17!important}
+html.neondo-dark input::placeholder,html.neondo-dark textarea::placeholder{color:#8f9388!important}
+html.neondo-dark .company-modal,html.neondo-dark .stage-modal{background:#191b17!important;color:#f3f4ed!important;border-color:#34372f!important}
+html.neondo-dark .stage-nav,html.neondo-dark .stage-footer{background:#11120f!important;color:#f3f4ed!important;border-color:#34372f!important}
+html.neondo-dark .stage-nav a,html.neondo-dark .stage-footer a{color:#f3f4ed!important}
+html.neondo-dark .stage-hero,html.neondo-dark .stage-opps,html.neondo-dark .stage-how,html.neondo-dark .stage-proof{color:#f3f4ed!important}
+
+/* Explicit light cards used inside dark mode. */
+html.neondo-dark .stage-art{color:#111!important}
+html.neondo-dark .stage-phone{background:#f8f5ed!important;color:#111!important;border-color:#111!important}
+html.neondo-dark .stage-sticker,html.neondo-dark .art-note{color:#111!important}
+html.neondo-dark .opp-card.lime{background:#d7ff3f!important;color:#111!important;border-color:#111!important}
+html.neondo-dark .opp-card.pink{background:#f25aa8!important;color:#111!important;border-color:#111!important}
+html.neondo-dark .opp-card.blue{background:#315cf5!important;color:#fff!important;border-color:#111!important}
+html.neondo-dark .scene-card{background:#f5f2ea!important;color:#111!important;border-color:#111!important}
+
+/* Logo: never inherit a background block or legacy mark. */
+html.neondo-dark .stage-logo{background:none!important}
+html.neondo-dark .stage-logo .stage-logo-mark{display:none!important}
+
+/* Mobile surfaces keep the same contract. */
+@media(max-width:800px){
+  .company-shell .sidebar,.dashboard .sidebar{background:#111!important}
+  html.neondo-dark .company-shell .sidebar,html.neondo-dark .dashboard .sidebar{background:#191b17!important}
+}
