@@ -15,4 +15,9 @@ import "./sitewide-theme.css";
 import SitePreferences from "@/components/site-preferences";
 
 export const metadata: Metadata = { title:"NEONDO — Global event & creative network", description:"Discover events, connect with people, and find work and creative opportunities across cities worldwide." };
-export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="en"><body>{children}<SitePreferences/></body></html>}
+
+const themeInitScript = `(() => { try { const saved = localStorage.getItem('neondo-theme'); const prefers = window.matchMedia('(prefers-color-scheme: dark)').matches; if (saved === 'dark' || (!saved && prefers)) document.documentElement.classList.add('neondo-dark'); else document.documentElement.classList.remove('neondo-dark'); } catch (_) {} })()`;
+
+export default function RootLayout({children}:{children:React.ReactNode}){
+  return <html lang="en" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{__html:themeInitScript}} /></head><body>{children}<SitePreferences/></body></html>
+}
